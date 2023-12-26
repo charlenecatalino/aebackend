@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Patients;
 use Illuminate\Http\Request;
+use App\Models\Patients;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PatientsRequest;
 
 class PatientsController extends Controller
 {
     /**
-     * Display a listing of patients.
+     * Display a listing of the resource.
      */
     public function index()
     {
@@ -17,68 +18,56 @@ class PatientsController extends Controller
     }
 
     /**
-     * Store a newly created patient in storage.
+     * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PatientsRequest $request)
     {
-        $validatedData = $request->validate([
-            'password' => 'required|string',
-            'patient_first_name' => 'required|string',
-            'patient_last_name' => 'required|string',
-            'patient_marital_status' => 'required|string',
-            'patient_date_of_birth' => 'required|date',
-            'patient_gender' => 'required|string',
-            'patient_address' => 'required|string',
-            'patient_phone' => 'required|string',
-            'patient_email' => 'required|email|unique:patients,patient_email',
-        ]);
+        // Validate the request and retrieve the validated input data
+        $validated = $request->validated();
 
-        $patient = Patients::create($validatedData);
+        // Create a new patient
+        $patient = Patients::create($validated);
 
-        return response()->json(['patient' => $patient], 201);
+        return $patient;
     }
 
     /**
-     * Display the specified patient.
+     * Display the specified resource.
      */
     public function show(string $id)
     {
-        $patient = Patients::findOrFail($id);
-        return response()->json(['patient' => $patient]);
+        // Find the patient by ID or throw a 404 exception
+        return Patients::findOrFail($id);
     }
 
     /**
-     * Update the specified patient in storage.
+     * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PatientsRequest $request, string $id)
     {
+        // Validate the request and retrieve the validated input data
+        $validated = $request->validated();
+
+        // Find the patient by ID or throw a 404 exception
         $patient = Patients::findOrFail($id);
 
-        $validatedData = $request->validate([
-            'password' => 'required|string',
-            'patient_first_name' => 'required|string',
-            'patient_last_name' => 'required|string',
-            'patient_marital_status' => 'required|string',
-            'patient_date_of_birth' => 'required|date',
-            'patient_gender' => 'required|string',
-            'patient_address' => 'required|string',
-            'patient_phone' => 'required|string',
-            'patient_email' => 'required|email|unique:patients,patient_email,' . $patient->patient_id,
-        ]);
+        // Update the patient
+        $patient->update($validated);
 
-        $patient->update($validatedData);
-
-        return response()->json(['patient' => $patient]);
+        return $patient;
     }
 
     /**
-     * Remove the specified patient from storage.
+     * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
+        // Find the patient by ID or throw a 404 exception
         $patient = Patients::findOrFail($id);
+
+        // Delete the patient
         $patient->delete();
 
-        return response()->json(['message' => 'Patient deleted successfully']);
+        return $patient;
     }
 }
