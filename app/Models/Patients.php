@@ -56,5 +56,5 @@ class Patients extends Model
      *
      * @var bool
      */
-    protected $timestamps = false;
+    public $timestamps = false;
 }
