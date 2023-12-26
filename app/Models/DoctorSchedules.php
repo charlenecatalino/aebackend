@@ -5,23 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Patients extends Model
+class DoctorSchedules extends Model
 {
     use HasFactory;
 
-    /**
+     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'patients';
+    protected $table = 'doctor_schedules';
 
     /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = 'patient_id';
+    protected $primaryKey = 'schedule_id';
 
     /**
      * The attributes that are mass assignable.
@@ -29,32 +29,28 @@ class Patients extends Model
      * @var array
      */
     protected $fillable = [
-        'username',
-        'password',
-        'firstname',
-        'lastname',
-        'marital_status',
-        'date_of_birth',
-        'gender',
-        'address',
-        'contact_number',
-        'email',
+        'day_of_week',
+        'start_time',
+        'end_time',
+        'staff_id',
     ];
 
-     /**
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
      */
     protected $casts = [
-        'date_of_birth' => 'date',
-        'password' => 'hashed',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
     ];
 
     /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
+     * Get the staff member associated with the schedule.
      */
-    protected $timestamps = false;
+    public function staff()
+    {
+        return $this->belongsTo(Staffs::class, 'staff_id', 'staff_id');
+    }
+
 }
